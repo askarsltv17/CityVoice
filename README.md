@@ -4,10 +4,14 @@
 
 ## Authors
 
+- SCA23A:
+- Sultanov Askar
+- Koshaliev Alikhan
+
 GitHub repository:
 
 - `https://github.com/askarsltv17/CityVoice.git`
-
+  
 ## Stack
 
 - Frontend: `HTML`, `CSS`, `JavaScript`
