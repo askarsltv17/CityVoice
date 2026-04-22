@@ -1,0 +1,212 @@
+{
+  "admin": {
+    "email": "admin@cityvoice.local",
+    "name": "admin",
+    "password": "admin123",
+    "role": "admin",
+    "last_name": "Админов",
+    "first_name": "Админ",
+    "middle_name": "",
+    "birth_year": 1998
+  },
+  "users": [
+    {
+      "email": "aidana@example.com",
+      "name": "Айпери",
+      "password": "user123",
+      "role": "user",
+      "last_name": "Токтосунова",
+      "first_name": "Айпери",
+      "middle_name": "",
+      "birth_year": 2001
+    },
+    {
+      "email": "bektur@example.com",
+      "name": "Бектур",
+      "password": "user123",
+      "role": "user",
+      "last_name": "Садыков",
+      "first_name": "Бектур",
+      "middle_name": "",
+      "birth_year": 1999
+    },
+    {
+      "email": "aigerim@example.com",
+      "name": "Айгерим",
+      "password": "user123",
+      "role": "user",
+      "last_name": "Абдиева",
+      "first_name": "Айгерим",
+      "middle_name": "",
+      "birth_year": 2002
+    },
+    {
+      "email": "elnura@example.com",
+      "name": "Эльнура",
+      "password": "user123",
+      "role": "user",
+      "last_name": "Жээнбекова",
+      "first_name": "Эльнура",
+      "middle_name": "",
+      "birth_year": 1997
+    },
+    {
+      "email": "temir@example.com",
+      "name": "Темир",
+      "password": "user123",
+      "role": "user",
+      "last_name": "Сапаров",
+      "first_name": "Темир",
+      "middle_name": "",
+      "birth_year": 1996
+    },
+    {
+      "email": "moderator@cityvoice.local",
+      "name": "moderator",
+      "password": "moderator123",
+      "role": "moderator",
+      "last_name": "Калыкбеков",
+      "first_name": "Модератор",
+      "middle_name": "",
+      "birth_year": 1995
+    }
+  ],
+  "complaints": [
+    {
+      "title": "Не работает освещение у остановки",
+      "category": "Освещение",
+      "district": "Первомайский район",
+      "description": "После 20:00 возле остановки темно, людям небезопасно возвращаться домой.",
+      "status": "Открыта",
+      "author_email": "aidana@example.com"
+    },
+    {
+      "title": "Переполнены контейнеры возле рынка",
+      "category": "Мусор",
+      "district": "Свердловский район",
+      "description": "Контейнеры не вывозили несколько дней, мусор уже разлетается по тротуару.",
+      "status": "В работе",
+      "author_email": "bektur@example.com"
+    },
+    {
+      "title": "Ямы на дороге возле школы",
+      "category": "Дороги",
+      "district": "Октябрьский район",
+      "description": "После дождя дорога разбита, машины объезжают ямы прямо у пешеходного перехода.",
+      "status": "Решена",
+      "author_email": "aigerim@example.com"
+    },
+    {
+      "title": "Сломана детская площадка во дворе",
+      "category": "Благоустройство",
+      "district": "Ленинский район",
+      "description": "На площадке сломаны качели и покрытие, детям сейчас небезопасно играть.",
+      "status": "Открыта",
+      "author_email": "elnura@example.com"
+    },
+    {
+      "title": "Скопилась вода после дождя у поликлиники",
+      "category": "Дороги",
+      "district": "Свердловский район",
+      "description": "Лужа перекрывает подход к входу, пешеходам приходится выходить на проезжую часть.",
+      "status": "В работе",
+      "author_email": "temir@example.com"
+    },
+    {
+      "title": "Нужен светофор у нового жилого комплекса",
+      "category": "Безопасность",
+      "district": "Октябрьский район",
+      "description": "Машины едут быстро, а жители переходят дорогу к остановке без безопасного перехода.",
+      "status": "Открыта",
+      "author_email": "aidana@example.com"
+    },
+    {
+      "title": "Редко вывозят мусор возле парка",
+      "category": "Мусор",
+      "district": "Первомайский район",
+      "description": "В выходные урны переполняются уже к полудню, вокруг появляется неприятный запах.",
+      "status": "В работе",
+      "author_email": "bektur@example.com"
+    },
+    {
+      "title": "Нет освещения на аллее у набережной",
+      "category": "Освещение",
+      "district": "Каракол",
+      "description": "Вечером аллея полностью темная, из-за этого жители перестали гулять после работы.",
+      "status": "Открыта",
+      "author_email": "aigerim@example.com"
+    }
+  ],
+  "petitions": [
+    {
+      "title": "Сделать безопасный переход возле школы",
+      "category": "Безопасность",
+      "district": "Ленинский район",
+      "description": "Нужен новый пешеходный переход и лежачий полицейский возле школьного входа.",
+      "goal": 150,
+      "votes": 58,
+      "status": "Активна",
+      "author_email": "aidana@example.com"
+    },
+    {
+      "title": "Продлить вечерний автобусный маршрут",
+      "category": "Транспорт",
+      "district": "Октябрьский район",
+      "description": "После 21:00 сложно уехать из центра Бишкека в жилмассивы без пересадок.",
+      "goal": 200,
+      "votes": 94,
+      "status": "Активна",
+      "author_email": "bektur@example.com"
+    },
+    {
+      "title": "Установить больше урн в парке Ынтымак",
+      "category": "Мусор",
+      "district": "Первомайский район",
+      "description": "В прогулочной части парка урн не хватает, мусор остаётся возле скамеек.",
+      "goal": 120,
+      "votes": 41,
+      "status": "Активна",
+      "author_email": "aigerim@example.com"
+    },
+    {
+      "title": "Высадить деревья вдоль школьной улицы",
+      "category": "Экология",
+      "district": "Ленинский район",
+      "description": "Новая зелёная линия поможет сделать улицу тише, прохладнее и безопаснее для детей.",
+      "goal": 180,
+      "votes": 73,
+      "status": "Активна",
+      "author_email": "elnura@example.com"
+    },
+    {
+      "title": "Открыть велопарковки у торгового центра",
+      "category": "Благоустройство",
+      "district": "Свердловский район",
+      "description": "Жителям не хватает безопасных мест для велосипедов и самокатов возле входа.",
+      "goal": 90,
+      "votes": 27,
+      "status": "Активна",
+      "author_email": "temir@example.com"
+    },
+    {
+      "title": "Обновить освещение на набережной",
+      "category": "Освещение",
+      "district": "Октябрьский район",
+      "description": "На прогулочном маршруте часть фонарей не работает, из-за чего вечером темно.",
+      "goal": 140,
+      "votes": 65,
+      "status": "Активна",
+      "author_email": "aidana@example.com"
+    },
+    {
+      "title": "Сделать остановку доступной для колясок",
+      "category": "Транспорт",
+      "district": "Первомайский район",
+      "description": "Нужны пандусы и ровный подход, чтобы остановкой могли пользоваться все жители.",
+      "goal": 110,
+      "votes": 39,
+      "status": "Активна",
+      "author_email": "moderator@cityvoice.local"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+instance/
+postgres-data/
+*.pyc
+.env
+startup*.log
+verify-start*.log
+cloudflared*.log
+*.db-journal
+sqlite-*-test.db
+sqlite-*-test.db-journal
+CityVoice_TZ.docx

@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CityVoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='20260408ap') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon-rounded.png') }}" />
+</head>
+<body>
+  <div class="page-glow glow-one"></div>
+  <div class="page-glow glow-two"></div>
+  <div class="page-glow glow-three"></div>
+
+  <div class="site-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <span class="brand-kicker">Городские инициативы Кыргызстана</span>
+        <a href="#" class="brand-link" data-tab-link="home">CityVoice</a>
+      </div>
+
+      <nav class="main-nav" aria-label="Навигация">
+        <button class="nav-button active" type="button" data-tab-link="home">Главная</button>
+        <button class="nav-button" type="button" data-tab-link="complaints">Жалобы</button>
+        <button class="nav-button" type="button" data-tab-link="petitions">Петиции</button>
+        <button class="nav-button" type="button" data-tab-link="account">Профиль</button>
+        <button id="moderation-nav" class="nav-button hidden" type="button" data-tab-link="moderation">Модерация</button>
+      </nav>
+
+      <div class="toolbar">
+        <div class="notification-wrap">
+          <button id="notifications-toggle" class="icon-button" type="button" aria-label="Уведомления">
+            <span class="icon-glyph">🔔</span>
+            <span id="notification-count" class="notification-count hidden">0</span>
+          </button>
+          <div id="notifications-dropdown" class="dropdown-panel hidden">
+            <div class="dropdown-head">
+              <h3>Уведомления</h3>
+              <button id="mark-notifications-read" class="ghost-button small" type="button">Прочитать все</button>
+            </div>
+            <div id="notifications-list" class="dropdown-list"></div>
+          </div>
+        </div>
+
+        <button id="theme-toggle" class="theme-button" type="button" aria-label="Переключить тему">
+          <span id="theme-toggle-icon">☀️</span>
+          <span id="theme-toggle-label">Светлая тема</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-stack">
+      <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+      <section class="panel active" data-tab="home">
+        <div class="hero-layout">
+          <article class="hero-card hero-copy">
+            <span class="section-kicker">Новый вид городского сервиса</span>
+            <h1>Ваш голос <span>меняет город</span></h1>
+            <p class="hero-lead hero-lead-single-break">
+              <span class="hero-lead-line">Платформа для жалоб и петиций. Вместе мы делаем наши города</span><br />лучше.
+            </p>
+            <div class="hero-actions">
+              <button class="button primary" type="button" data-tab-link="complaints">Открыть жалобы</button>
+              <button class="button secondary" type="button" data-tab-link="petitions">Перейти к петициям</button>
+            </div>
+            <div id="tag-cloud" class="tag-cloud"></div>
+          </article>
+
+          <article class="hero-card hero-visual">
+            <div class="hero-visual-inner">
+              <div class="floating-chip chip-light">Новые отклики по районам</div>
+              <div class="phone-card">
+                <div class="phone-top">
+                  <span class="phone-dot"></span>
+                  <span class="phone-dot"></span>
+                  <span class="phone-dot"></span>
+                </div>
+                <div id="hero-counters" class="counter-stack"></div>
+              </div>
+              <div class="floating-ticket ticket-left">
+                <strong>Карта города</strong>
+                <span>Синхронизирована с жалобами</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="home-grid">
+          <article class="surface-card home-card wide-card">
+            <div class="card-head">
+              <div>
+                <span class="section-kicker">Горячие петиции</span>
+                <h2>Топ инициатив по голосам</h2>
+              </div>
+              <button class="ghost-button" type="button" data-tab-link="petitions">Все петиции</button>
+            </div>
+            <div id="hot-petitions" class="compact-feed"></div>
+          </article>
+
+          <article class="surface-card home-card wide-card">
+            <div class="card-head">
+              <div>
+                <span class="section-kicker">Недавние жалобы</span>
+                <h2>Последние обращения жителей</h2>
+              </div>
+              <button class="ghost-button" type="button" data-tab-link="complaints">Вся лента</button>
+            </div>
+            <div id="recent-complaints" class="compact-feed"></div>
+          </article>
+        </div>
+
+        <section class="home-process">
+          <div class="section-hero section-hero-center">
+            <div>
+              <span class="section-kicker">Как это работает</span>
+              <h2>Три простых шага</h2>
+            </div>
+          </div>
+
+          <div class="steps-grid">
+            <article class="surface-card step-card">
+              <div class="step-badge">01</div>
+              <div class="step-icon">◫</div>
+              <h3>Опишите проблему</h3>
+              <p>Создайте жалобу или петицию и коротко расскажите, что именно нужно изменить.</p>
+            </article>
+
+            <article class="surface-card step-card">
+              <div class="step-badge">02</div>
+              <div class="step-icon">◎</div>
+              <h3>Поддержите идею</h3>
+              <p>Голосуйте за инициативы и реагируйте на обращения других жителей вашего района.</p>
+            </article>
+
+            <article class="surface-card step-card">
+              <div class="step-badge">03</div>
+              <div class="step-icon">✓</div>
+              <h3>Следите за динамикой</h3>
+              <p>Отслеживайте статус публикаций, комментарии и уведомления в одном интерфейсе.</p>
+            </article>
+          </div>
+        </section>
+
+        <article class="surface-card map-card">
+          <div class="card-head">
+            <div>
+              <span class="section-kicker">Карта города</span>
+              <h2>Точки обращений по Бишкеку и другим городам Кыргызстана</h2>
+            </div>
+            <span class="mini-pill">Leaflet + OpenStreetMap</span>
+          </div>
+          <div id="city-map" class="map-surface"></div>
+        </article>
+      </section>
+
+      <section class="panel" data-tab="complaints">
+        <div class="section-hero">
+          <div>
+            <span class="section-kicker">Лента жалоб</span>
+            <h2>Публикуйте городские проблемы и отслеживайте реакцию жителей</h2>
+          </div>
+          <span id="complaint-count" class="hero-pill"></span>
+        </div>
+
+        <div class="two-column-layout issue-layout">
+          <article class="surface-card compose-card issue-compose-card">
+            <div class="card-head">
+              <div>
+                <h3>Новая жалоба</h3>
+                <p>Коротко и по делу: что случилось и где именно.</p>
+              </div>
+            </div>
+            <div id="complaint-login-hint" class="inline-note">Войдите, чтобы публиковать жалобы.</div>
+            <form id="complaint-form" class="form-grid compose-form">
+              <label>
+                Заголовок
+                <input name="title" type="text" placeholder="Не работает освещение во дворе" required />
+              </label>
+              <label>
+                Категория
+                <div class="select-field" data-select data-options-key="categories" data-placeholder="Выберите категорию">
+                  <input type="hidden" name="category" required />
+                  <button class="select-trigger" type="button" data-select-trigger>
+                    <span data-select-value>Выберите категорию</span>
+                    <span class="select-arrow"></span>
+                  </button>
+                  <div class="select-menu hidden" data-select-menu></div>
+                </div>
+              </label>
+              <label>
+                Город или район
+                <div class="select-field" data-select data-options-key="districts" data-placeholder="Выберите город или район">
+                  <input type="hidden" name="district" required />
+                  <button class="select-trigger" type="button" data-select-trigger>
+                    <span data-select-value>Выберите город или район</span>
+                    <span class="select-arrow"></span>
+                  </button>
+                  <div class="select-menu hidden" data-select-menu></div>
+                </div>
+              </label>
+              <label class="full">
+                Описание
+                <textarea name="description" rows="5" placeholder="После 20:00 двор полностью погружается в темноту." required></textarea>
+              </label>
+              <button class="button primary compose-submit" type="submit">Опубликовать жалобу</button>
+            </form>
+          </article>
+
+          <article class="surface-card feed-card issue-feed-card">
+            <div class="feed-toolbar">
+              <div class="toolbar-search">
+                <input id="complaints-search" type="search" placeholder="Поиск жалоб..." />
+              </div>
+              <div class="toolbar-selects">
+                <div id="complaints-category-filter" class="select-field slim" data-select data-options-key="filterCategories" data-placeholder="Все категории">
+                  <input type="hidden" />
+                  <button class="select-trigger" type="button" data-select-trigger>
+                    <span data-select-value>Все категории</span>
+                    <span class="select-arrow"></span>
+                  </button>
+                  <div class="select-menu hidden" data-select-menu></div>
+                </div>
+                <div id="complaints-district-filter" class="select-field slim" data-select data-options-key="filterDistricts" data-placeholder="Все районы">
+                  <input type="hidden" />
+                  <button class="select-trigger" type="button" data-select-trigger>
+                    <span data-select-value>Все районы</span>
+                    <span class="select-arrow"></span>
+                  </button>
+                  <div class="select-menu hidden" data-select-menu></div>
+                </div>
+                <div id="complaints-sort-filter" class="select-field slim" data-select data-options-key="complaintSorts" data-placeholder="Новые">
+                  <input type="hidden" />
+                  <button class="select-trigger" type="button" data-select-trigger>
+                    <span data-select-value>Новые</span>
+                    <span class="select-arrow"></span>
+                  </button>
+                  <div class="select-menu hidden" data-select-menu></div>
+                </div>
+              </div>
+            </div>
+            <div id="complaints-feed" class="feed-list issue-feed-list"></div>
+            <button id="complaints-load-more" class="ghost-button wide hidden" type="button">Показать ещё</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" data-tab="petitions">
+        <div class="section-hero">
+          <div>
+            <span class="section-kicker">Лента петиций</span>
+            <h2>Собирайте поддержку под инициативами, которые реально меняют город</h2>
+          </div>
+          <span id="petition-count" class="hero-pill"></span>
+        </div>
+
+        <div class="two-column-layout issue-layout">
+          <article class="surface-card compose-card issue-compose-card">
+            <div class="card-head">
+              <div>
+                <h3>Новая петиция</h3>
+                <p>Опишите инициативу и задайте цель по голосам.</p>
+              </div>
+            </div>
+            <div id="petition-login-hint" class="inline-note">Войдите, чтобы создавать петиции.</div>
+            <form id="petition-form" class="form-grid compose-form">
+              <label>
+                Заголовок
+                <input name="title" type="text" placeholder="Добавить вечерний автобусный маршрут" required />
+              </label>
+              <label>
+                Категория
+                <div class="select-field" data-select data-options-key="categories" data-placeholder="Выберите категорию">
+                  <input type="hidden" name="category" required />
+                  <button class="select-trigger" type="button" data-select-trigger>
+                    <span data-select-value>Выберите категорию</span>
+                    <span class="select-arrow"></span>
+                  </button>
+                  <div class="select-menu hidden" data-select-menu></div>
+                </div>
+              </label>
+              <label>
+                Город или район
+                <div class="select-field" data-select data-options-key="districts" data-placeholder="Выберите город или район">
+                  <input type="hidden" name="district" required />
+                  <button class="select-trigger" type="button" data-select-trigger>
+                    <span data-select-value>Выберите город или район</span>
+                    <span class="select-arrow"></span>
+                  </button>
+                  <div class="select-menu hidden" data-select-menu></div>
+                </div>
+              </label>
+              <label>
+                Цель по голосам
+                <input name="goal" type="number" min="10" step="10" value="100" required />
+              </label>
+              <label class="full">
+                Описание
+                <textarea name="description" rows="5" placeholder="После 21:00 сложно уехать из центра в район." required></textarea>
+              </label>
+              <button class="button primary compose-submit" type="submit">Создать петицию</button>
+            </form>
+          </article>
+
+          <article class="surface-card feed-card issue-feed-card">
+            <div class="feed-toolbar">
+              <div class="toolbar-search">
+                <input id="petitions-search" type="search" placeholder="Поиск петиций..." />
+              </div>
+              <div class="toolbar-selects">
+                <div id="petitions-category-filter" class="select-field slim" data-select data-options-key="filterCategories" data-placeholder="Все категории">
+                  <input type="hidden" />
+                  <button class="select-trigger" type="button" data-select-trigger>
+                    <span data-select-value>Все категории</span>
+                    <span class="select-arrow"></span>
+                  </button>
+                  <div class="select-menu hidden" data-select-menu></div>
+                </div>
+                <div id="petitions-district-filter" class="select-field slim" data-select data-options-key="filterDistricts" data-placeholder="Все районы">
+                  <input type="hidden" />
+                  <button class="select-trigger" type="button" data-select-trigger>
+                    <span data-select-value>Все районы</span>
+                    <span class="select-arrow"></span>
+                  </button>
+                  <div class="select-menu hidden" data-select-menu></div>
+                </div>
+                <div id="petitions-sort-filter" class="select-field slim" data-select data-options-key="petitionSorts" data-placeholder="По голосам">
+                  <input type="hidden" />
+                  <button class="select-trigger" type="button" data-select-trigger>
+                    <span data-select-value>По голосам</span>
+                    <span class="select-arrow"></span>
+                  </button>
+                  <div class="select-menu hidden" data-select-menu></div>
+                </div>
+              </div>
+            </div>
+            <div id="petitions-feed" class="feed-list issue-feed-list"></div>
+            <button id="petitions-load-more" class="ghost-button wide hidden" type="button">Показать ещё</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" data-tab="account">
+        <div class="section-hero">
+          <div>
+            <span class="section-kicker">Личный кабинет</span>
+            <h2 id="account-heading">Войдите или создайте профиль</h2>
+          </div>
+        </div>
+
+        <div id="guest-account" class="guest-layout">
+          <article class="surface-card auth-card">
+            <div class="card-head">
+              <div>
+                <h3>Регистрация</h3>
+                <p>Создайте аккаунт, чтобы публиковать обращения и поддерживать инициативы.</p>
+              </div>
+            </div>
+            <form id="register-form" class="form-grid">
+              <label>
+                Ник
+                <input name="name" type="text" placeholder="Ваш ник" required />
+              </label>
+              <label>
+                Email
+                <input name="email" type="email" placeholder="name@example.com" required />
+              </label>
+              <label class="full">
+                Пароль
+                <input name="password" type="password" placeholder="Минимум 6 символов" required />
+              </label>
+              <button class="button primary wide" type="submit">Зарегистрироваться</button>
+            </form>
+          </article>
+
+          <article class="surface-card auth-card">
+            <div class="card-head">
+              <div>
+                <h3>Вход</h3>
+                <p>Используйте свой email и пароль.</p>
+              </div>
+            </div>
+            <form id="login-form" class="form-grid">
+              <label>
+                Email
+                <input name="email" type="email" placeholder="name@example.com" required />
+              </label>
+              <label class="full">
+                Пароль
+                <input name="password" type="password" placeholder="Введите пароль" required />
+              </label>
+              <button class="button primary wide" type="submit">Войти</button>
+            </form>
+            <a id="forgot-password-link" class="forgot-password-link login-reset-link" href="{{ url_for('forgot_password_page') }}">
+              Сброс пароли
+            </a>
+          </article>
+        </div>
+
+        <div id="profile-dashboard" class="profile-dashboard hidden">
+          <div class="profile-layout">
+            <article class="surface-card avatar-card">
+              <div id="profile-avatar" class="profile-avatar-shell"></div>
+              <div class="profile-identity">
+                <h3 id="profile-display-name" class="profile-display-name"></h3>
+                <p id="profile-display-email" class="profile-display-email"></p>
+                <p id="profile-joined" class="profile-joined"></p>
+              </div>
+              <div class="avatar-card-actions">
+                <label class="ghost-button wide upload-label" for="avatar-input">Выбрать аватар</label>
+                <input id="avatar-input" class="hidden" type="file" accept="image/*" />
+                <button id="logout-button" class="ghost-button wide danger-button" type="button">Выйти</button>
+              </div>
+              <div class="profile-card-divider" aria-hidden="true"></div>
+              <div id="profile-badge" class="profile-badge hidden"></div>
+            </article>
+
+            <article class="surface-card profile-form-card">
+              <div class="card-head profile-form-head">
+                <div>
+                  <h3>Редактировать профиль</h3>
+                </div>
+              </div>
+              <form id="profile-form" class="form-grid profile-form-grid">
+                <label>
+                  Имя пользователя
+                  <input name="name" type="text" placeholder="Ник" required />
+                </label>
+                <label class="readonly-field" title="Изменение недоступно">
+                  Email
+                  <input name="email" type="email" readonly />
+                </label>
+                <label>
+                  Фамилия
+                  <input name="lastName" type="text" placeholder="Фамилия" />
+                </label>
+                <label>
+                  Имя
+                  <input name="firstName" type="text" placeholder="Имя" />
+                </label>
+                <label>
+                  Отчество
+                  <input name="middleName" type="text" placeholder="Отчество" />
+                </label>
+                <label>
+                  Год рождения
+                  <input name="birthYear" type="number" min="1900" max="2100" placeholder="1999" />
+                </label>
+                <div class="full form-actions">
+                  <a id="change-password-button" class="ghost-button change-password-button" href="{{ url_for('forgot_password_page') }}">Сменить пароль</a>
+                  <button class="button primary" type="submit">Сохранить профиль</button>
+                </div>
+              </form>
+            </article>
+          </div>
+
+          <div id="profile-stats" class="stats-row"></div>
+
+          <div class="profile-feed-grid">
+            <article class="surface-card">
+              <div class="card-head">
+                <div>
+                  <span class="section-kicker">Мои жалобы</span>
+                  <h3>История обращений</h3>
+                </div>
+              </div>
+              <div id="my-complaints" class="compact-feed"></div>
+            </article>
+
+            <article class="surface-card">
+              <div class="card-head">
+                <div>
+                  <span class="section-kicker">Мои петиции</span>
+                  <h3>История инициатив</h3>
+                </div>
+              </div>
+              <div id="my-petitions" class="compact-feed"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="moderation-panel" class="panel hidden" data-tab="moderation">
+        <div class="section-hero">
+          <div>
+            <span class="section-kicker">Модерация</span>
+            <h2>Очередь жалоб и управление ролями</h2>
+          </div>
+        </div>
+
+        <div class="profile-feed-grid">
+          <article class="surface-card">
+            <div class="card-head">
+              <div>
+                <h3>Очередь модерации</h3>
+                <p>Жалобы пользователей на публикации.</p>
+              </div>
+            </div>
+            <div id="moderation-reports" class="stacked-list"></div>
+          </article>
+
+          <article id="admin-complaints-card" class="surface-card hidden">
+            <div class="card-head">
+              <div>
+                <h3>Управление жалобами</h3>
+                <p>Администратор может менять статусы всех жалоб.</p>
+              </div>
+            </div>
+            <div id="admin-complaints" class="stacked-list"></div>
+          </article>
+
+          <article id="admin-petitions-card" class="surface-card hidden">
+            <div class="card-head">
+              <div>
+                <h3>Управление петициями</h3>
+                <p>Администратор может менять статусы всех петиций.</p>
+              </div>
+            </div>
+            <div id="admin-petitions" class="stacked-list"></div>
+          </article>
+
+          <article id="admin-users-card" class="surface-card hidden">
+            <div class="card-head">
+              <div>
+                <h3>Роли пользователей</h3>
+                <p>Только администратор может назначать модераторов и админов.</p>
+              </div>
+            </div>
+            <div id="admin-users" class="stacked-list"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand-block">
+        <a href="#" class="brand-link footer-brand" data-tab-link="home">CityVoice</a>
+        <p>Современная платформа для жалоб, петиций и обратной связи от жителей Кыргызстана.</p>
+      </div>
+      <nav class="footer-links" aria-label="Навигация в футере">
+        <a href="#" data-tab-link="home">Главная</a>
+        <a href="#" data-tab-link="complaints">Жалобы</a>
+        <a href="#" data-tab-link="petitions">Петиции</a>
+        <a href="#" data-tab-link="account">Профиль</a>
+        <a href="{{ url_for('privacy') }}">Политика конфиденциальности</a>
+      </nav>
+      <div class="footer-copy">© 2026 CityVoice</div>
+    </footer>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="{{ url_for('static', filename='script.js', v='20260408ah') }}"></script>
+  <script src="{{ url_for('static', filename='patch-ui.js', v='20260408ah') }}"></script>
+</body>
+</html>
